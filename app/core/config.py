@@ -25,7 +25,8 @@ class Settings(BaseSettings):
     # JWT 配置
     JWT_SECRET_KEY: str = "your-secret-key-change-in-production"
     JWT_ALGORITHM: str = "HS256"
-    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7天
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 2
+    JWT_REFRESH_EXPIRE_DAYS: int = 7  # 7天
 
     # WECHAT MINIPROGRAM 配置
     WECHAT_APP_ID: str = ""

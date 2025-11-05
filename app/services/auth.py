@@ -6,8 +6,8 @@ from app.core.config import settings
 class AuthService:
     def __init__(self):
         self.secret_key = settings.JWT_SECRET_KEY
-        self.access_expire_minutes = 60 * 2  # 2小时
-        self.refresh_expire_days = 7  # 7天
+        self.access_expire_minutes = settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES  # 2小时
+        self.refresh_expire_days = settings.JWT_REFRESH_EXPIRE_DAYS  # 7天
 
     def create_access_token(self, user_id: int) -> str:
         """创建访问令牌（2小时）"""
