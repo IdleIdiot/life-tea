@@ -1,8 +1,15 @@
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.api.routes import auth, users
+from app.routes import auth, users
+from app.core.logger import setup_logger
+
+
+setup_logger()
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title=settings.APP_NAME, version=settings.APP_VERSION, debug=settings.DEBUG
@@ -24,7 +31,7 @@ app.include_router(users.router, prefix="/api/users", tags=["用户"])
 
 @app.get("/")
 async def root():
-    return {"message": "奶茶店小程序后端服务运行中"}
+    return {"message": "后端服务运行中"}
 
 
 @app.get("/health")

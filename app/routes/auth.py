@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.dependencies.auth import get_db_dep
+from app.dependencies import get_db
 from app.schemas.response import success_response
 from app.services.auth import auth_service
 from app.services.wechat import wechat_service
@@ -10,7 +10,7 @@ router = APIRouter()
 
 
 @router.post("/login")
-async def wechat_login(code: str, db: Session = Depends(get_db_dep)):
+async def wechat_login(code: str, db: Session = Depends(get_db)):
     """微信小程序登录"""
     try:
         # 获取 openid
@@ -40,7 +40,7 @@ async def wechat_login(code: str, db: Session = Depends(get_db_dep)):
                 "points": 0,
                 "status": 1,
             }
-            db_user = user_crud.create_user(db, user_in=user_data)
+            db_user = user_crud.create_user(db, user_data=user_data)
 
         # 生成 JWT token
         access_token = auth_service.create_access_token(data={"sub": str(db_user.id)})
@@ -66,12 +66,3 @@ async def wechat_login(code: str, db: Session = Depends(get_db_dep)):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.get("/me")
-async def get_current_user(current_user: dict = Depends(lambda: None)):
-    """获取当前用户信息（简化版本）"""
-    if not current_user:
-        raise HTTPException(status_code=401, detail="未登录")
-
-    return success_response(data=current_user)

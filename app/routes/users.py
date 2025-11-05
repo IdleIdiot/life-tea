@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.dependencies.auth import get_db_dep, get_current_user_dep
+from app.dependencies import get_db, get_current_user
 from app.schemas.response import success_response
-from app.crud.user import user as user_crud, user_address as address_crud
+from app.crud import user_crud, address_crud
 
 router = APIRouter()
 
 
 @router.get("/profile")
-async def get_user_profile(current_user: dict = Depends(get_current_user_dep)):
+async def get_user_profile(current_user: dict = Depends(get_current_user)):
     """获取用户资料"""
     return success_response(data=current_user)
 
@@ -16,8 +16,8 @@ async def get_user_profile(current_user: dict = Depends(get_current_user_dep)):
 @router.put("/profile")
 async def update_user_profile(
     profile_data: dict,
-    db: Session = Depends(get_db_dep),
-    current_user: dict = Depends(get_current_user_dep),
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user),
 ):
     """更新用户资料"""
     try:
@@ -44,8 +44,8 @@ async def update_user_profile(
 
 @router.get("/addresses")
 async def get_user_addresses(
-    db: Session = Depends(get_db_dep),
-    current_user: dict = Depends(get_current_user_dep),
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user),
 ):
     """获取用户地址列表"""
     try:
@@ -74,8 +74,8 @@ async def get_user_addresses(
 @router.post("/addresses")
 async def create_user_address(
     address_data: dict,
-    db: Session = Depends(get_db_dep),
-    current_user: dict = Depends(get_current_user_dep),
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user),
 ):
     """创建用户地址"""
     try:
@@ -97,3 +97,9 @@ async def create_user_address(
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/me")
+async def get_current_user(current_user: dict = Depends(get_current_user)):
+    """获取当前用户信息（简化版本）"""
+    return success_response(data=current_user)

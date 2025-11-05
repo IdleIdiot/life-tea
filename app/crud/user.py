@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+
 from app.models.user import User, UserAddress
 
 
@@ -8,7 +9,7 @@ class UserCRUD:
     def __init__(self):
         self.model = User
 
-    def get(self, db: Session, user_id: int):
+    def get_user(self, db: Session, user_id: int):
         """根据ID获取用户"""
         return db.query(self.model).filter(self.model.id == user_id).first()
 
@@ -20,7 +21,7 @@ class UserCRUD:
         """根据手机号获取用户"""
         return db.query(self.model).filter(self.model.phone == phone).first()
 
-    def create(self, db: Session, user_data: dict):
+    def create_user(self, db: Session, user_data: dict):
         """创建用户"""
         # 检查 openid 是否已存在
         if self.get_by_openid(db, user_data["openid"]):
@@ -32,7 +33,7 @@ class UserCRUD:
         db.refresh(user)
         return user
 
-    def update(self, db: Session, user_id: int, update_data: dict):
+    def update_user(self, db: Session, user_id: int, update_data: dict):
         """更新用户信息"""
         user = self.get(db, user_id)
         if not user:
@@ -62,11 +63,11 @@ class UserAddressCRUD:
     def __init__(self):
         self.model = UserAddress
 
-    def get(self, db: Session, address_id: int):
+    def get_user_address(self, db: Session, address_id: int):
         """根据ID获取地址"""
         return db.query(self.model).filter(self.model.id == address_id).first()
 
-    def get_by_user(self, db: Session, user_id: int):
+    def get_address_by_user(self, db: Session, user_id: int):
         """获取用户的所有地址"""
         return (
             db.query(self.model)
@@ -75,7 +76,7 @@ class UserAddressCRUD:
             .all()
         )
 
-    def get_default(self, db: Session, user_id: int):
+    def get_default_address(self, db: Session, user_id: int):
         """获取用户的默认地址"""
         return (
             db.query(self.model)
@@ -83,7 +84,7 @@ class UserAddressCRUD:
             .first()
         )
 
-    def create(self, db: Session, address_data: dict):
+    def create_user_address(self, db: Session, address_data: dict):
         """创建地址"""
         address = self.model(**address_data)
         db.add(address)
@@ -91,7 +92,7 @@ class UserAddressCRUD:
         db.refresh(address)
         return address
 
-    def update(self, db: Session, address_id: int, update_data: dict):
+    def update_user_address(self, db: Session, address_id: int, update_data: dict):
         """更新地址"""
         address = self.get(db, address_id)
         if not address:
@@ -105,7 +106,7 @@ class UserAddressCRUD:
         db.refresh(address)
         return address
 
-    def set_default(self, db: Session, address_id: int, user_id: int):
+    def set_default_address(self, db: Session, address_id: int, user_id: int):
         """设置默认地址"""
         # 取消所有默认地址
         db.query(self.model).filter(self.model.user_id == user_id).update(
@@ -119,7 +120,7 @@ class UserAddressCRUD:
 
         db.commit()
 
-    def delete(self, db: Session, address_id: int):
+    def delete_user_address(self, db: Session, address_id: int):
         """删除地址"""
         address = self.get(db, address_id)
         if address:

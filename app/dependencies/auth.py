@@ -1,9 +1,10 @@
-from fastapi import Depends, HTTPException, Header
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
-from app.dependencies.database import get_db
-from app.services.auth import auth_service
+from fastapi import Depends, HTTPException
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
 from app.crud.user import user_crud
+from app.services.auth import auth_service
+from app.dependencies import get_db
 
 # JWT Bearer 认证
 security = HTTPBearer(auto_error=False)
@@ -66,8 +67,3 @@ async def verify_token_only(
         raise HTTPException(status_code=401, detail="Token无效或已过期")
 
     return payload
-
-
-# 依赖注入简化
-CurrentUser = Depends(get_current_user)
-ValidToken = Depends(verify_token_only)

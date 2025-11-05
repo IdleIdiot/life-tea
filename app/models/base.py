@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, DateTime, func
 from sqlalchemy.ext.declarative import declared_attr
-from app.dependencies.database import Base
+from app.dependencies import Base
 
 
 class BaseModel(Base):

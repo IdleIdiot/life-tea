@@ -1,68 +1,55 @@
 from datetime import datetime, timedelta, timezone
-from typing import Optional
-from jose import JWTError, jwt
-from passlib.context import CryptContext
+from jose import jwt
 from app.core.config import settings
-
-# 密码加密上下文
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class AuthService:
     def __init__(self):
         self.secret_key = settings.JWT_SECRET_KEY
-        self.algorithm = "HS256"
-        self.access_token_expire_minutes = settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES
+        self.access_expire_minutes = 60 * 2  # 2小时
+        self.refresh_expire_days = 7  # 7天
 
-    def create_access_token(
-        self, user_id: int, expires_delta: Optional[timedelta] = None
-    ) -> str:
-        """创建 JWT Token"""
-        expire = datetime.now(timezone.utc) + (
-            expires_delta or timedelta(minutes=self.access_token_expire_minutes)
+    def create_access_token(self, user_id: int) -> str:
+        """创建访问令牌（2小时）"""
+        expire = datetime.now(timezone.utc) + timedelta(
+            minutes=self.access_expire_minutes
         )
 
-        payload = {
-            "sub": str(user_id),  # 标准做法：subject 存放用户ID
-            "exp": expire,
-            "iat": datetime.now(timezone.utc),  # 签发时间
-        }
+        payload = {"sub": str(user_id), "exp": expire, "type": "access"}
 
-        return jwt.encode(payload, self.secret_key, algorithm=self.algorithm)
+        return jwt.encode(payload, self.secret_key, algorithm="HS256")
 
-    def verify_token(self, token: str) -> Optional[dict]:
-        """验证 JWT Token"""
+    def create_refresh_token(self, user_id: int) -> str:
+        """创建刷新令牌（7天）"""
+        expire = datetime.now(timezone.utc) + timedelta(days=self.refresh_expire_days)
+
+        payload = {"sub": str(user_id), "exp": expire, "type": "refresh"}
+
+        return jwt.encode(payload, self.secret_key, algorithm="HS256")
+
+    def verify_token(self, token: str, token_type: str = "access") -> int:
+        """验证令牌"""
         try:
-            payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
+            payload = jwt.decode(token, self.secret_key, algorithms=["HS256"])
 
-            # 检查是否过期（使用时区感知的时间比较）
-            if datetime.now(timezone.utc) > datetime.fromtimestamp(
-                payload["exp"], tz=timezone.utc
-            ):
+            # 检查类型
+            if payload.get("type") != token_type:
                 return None
 
-            return payload
-        except JWTError:
+            return int(payload["sub"])
+        except:
             return None
 
-    def get_user_id_from_token(self, token: str) -> Optional[int]:
-        """从Token中提取用户ID"""
-        payload = self.verify_token(token)
-        if payload and "sub" in payload:
-            try:
-                return int(payload["sub"])
-            except (ValueError, TypeError):
-                return None
-        return None
+    def refresh_tokens(self, refresh_token: str) -> dict:
+        """使用刷新令牌获取新令牌"""
+        user_id = self.verify_token(refresh_token, "refresh")
+        if not user_id:
+            return None
 
-    def get_password_hash(self, password: str) -> str:
-        """生成密码哈希"""
-        return pwd_context.hash(password)
-
-    def verify_password(self, plain_password: str, hashed_password: str) -> bool:
-        """验证密码"""
-        return pwd_context.verify(plain_password, hashed_password)
+        return {
+            "access_token": self.create_access_token(user_id),
+            "refresh_token": self.create_refresh_token(user_id),  # 可选：返回新刷新令牌
+        }
 
 
-# 创建全局实例
 auth_service = AuthService()

@@ -1,5 +1,6 @@
-from sqlalchemy.orm import Session
 from typing import Any, Dict, List, Optional
+
+from sqlalchemy.orm import Session
 
 
 class CRUDBase:

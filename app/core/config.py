@@ -1,4 +1,3 @@
-import os
 import logging
 from functools import lru_cache
 
@@ -14,7 +13,9 @@ class Settings(BaseSettings):
     DEBUG: bool = True
 
     # 数据库配置
-    DATABASE_URL: str = "mysql+mysqldb://user:password@localhost/milk_tea_shop"
+    DATABASE_URL: str = (
+        "mysql+mysqldb://admin:Amazing0534@sh-cynosdbmysql-grp-08otnh8a.sql.tencentcdb.com:26106/cloud1-7g2z6qs0ef1cb4ae"
+    )
 
     # 微信小程序配置
     # WECHAT_APP_ID: str = os.getenv("WECHAT_APP_ID", "")
@@ -22,11 +23,13 @@ class Settings(BaseSettings):
     # WECHAT_TOKEN_URL: str = "https://api.weixin.qq.com/sns/jscode2session"
 
     # JWT 配置
-    JWT_SECRET_KEY: str = os.getenv(
-        "JWT_SECRET_KEY", "your-secret-key-change-in-production"
-    )
+    JWT_SECRET_KEY: str = "your-secret-key-change-in-production"
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7天
+
+    # WECHAT MINIPROGRAM 配置
+    WECHAT_APP_ID: str = ""
+    WECHAT_APP_SECRET: str = ""
 
     class Config:
         env_file = ".env"
