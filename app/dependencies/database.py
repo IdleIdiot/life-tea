@@ -11,8 +11,6 @@ engine = create_engine(
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
-
 
 # 依赖注入：获取数据库会话
 def get_db():

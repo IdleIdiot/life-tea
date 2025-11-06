@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_current_user
 from app.schemas.response import success_response
-from app.crud import user_crud, address_crud
+from app.crud import user_crud
 
 router = APIRouter()
 
@@ -103,3 +103,52 @@ async def create_user_address(
 async def get_current_user(current_user: dict = Depends(get_current_user)):
     """获取当前用户信息（简化版本）"""
     return success_response(data=current_user)
+
+
+@router.post("/register")
+async def wechat_register(req: Request, db: Session = Depends(get_db)):
+    """微信小程序登录"""
+    try:
+        # 获取 openid
+        openid = req.headers.get("x-wx-openid", None)
+        unionid = req.headers.get("x-wx-unionid", "")
+
+        if not openid:
+            raise HTTPException(status_code=400, detail="获取openid失败")
+
+        # 查找或创建用户
+        db_user = user_crud.get_by_openid(db, openid=openid)
+        if not db_user:
+            # 创建新用户
+            user_data = {
+                "openid": openid,
+                "unionid": unionid,
+                "nick_name": f"用户{openid[-6:]}",
+                "avatar_url": "cloud://cloud1-7g2z6qs0ef1cb4ae.636c-cloud1-7g2z6qs0ef1cb4ae-1384302075/mikltea/data/images/user_avatar.png",
+                "phone": "",
+                "gender": 0,
+                "member_level": 1,
+                "points": 0,
+                "status": 1,
+            }
+            db_user = user_crud.create_user(db, user_data=user_data)
+
+        user_response = {
+            "id": db_user.id,
+            "openid": db_user.openid,
+            "nick_name": db_user.nick_name,
+            "avatar_url": db_user.avatar_url,
+            "phone": db_user.phone,
+            "gender": db_user.gender,
+            "member_level": db_user.member_level,
+            "points": db_user.points,
+            "status": db_user.status,
+        }
+
+        return success_response(
+            data={
+                "user": user_response,
+            }
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

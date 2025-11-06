@@ -3,9 +3,7 @@ from sqlalchemy import (
     String,
     Integer,
     Boolean,
-    DateTime,
     Date,
-    Text,
     ForeignKey,
 )
 from sqlalchemy.orm import relationship
