@@ -33,7 +33,7 @@ async def wechat_login(code: str, db: Session = Depends(get_db)):
                 "openid": openid,
                 "unionid": wechat_data.get("unionid"),
                 "nick_name": f"用户{openid[-6:]}",
-                "avatar_url": "",
+                "avatar_url": "cloud://cloud1-7g2z6qs0ef1cb4ae.636c-cloud1-7g2z6qs0ef1cb4ae-1384302075/mikltea/data/images/user_avatar.png",
                 "phone": "",
                 "gender": 0,
                 "member_level": 1,
