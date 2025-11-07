@@ -135,6 +135,7 @@ async def wechat_register(req: Request, db: Session = Depends(get_db)):
 
         user_response = {
             "id": db_user.id,
+            "unionid": db_user.unionid,
             "openid": db_user.openid,
             "nick_name": db_user.nick_name,
             "avatar_url": db_user.avatar_url,

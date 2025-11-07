@@ -25,13 +25,13 @@ class User(BaseModel):
     status = Column(Integer, default=1)  # 1:正常, 0:禁用
 
     # 关系
-    addresses = relationship(
-        "UserAddress", back_populates="user", cascade="all, delete-orphan"
-    )
-    orders = relationship("Order", back_populates="user")
-    cart = relationship("Cart", back_populates="user", uselist=False)
-    favorites = relationship("Favorite", back_populates="user")
-    coupons = relationship("UserCoupon", back_populates="user")
+    # addresses = relationship(
+    #     "UserAddress", back_populates="user", cascade="all, delete-orphan"
+    # )
+    # orders = relationship("Order", back_populates="user")
+    # cart = relationship("Cart", back_populates="user", uselist=False)
+    # favorites = relationship("Favorite", back_populates="user")
+    # coupons = relationship("UserCoupon", back_populates="user")
 
 
 class UserAddress(BaseModel):
