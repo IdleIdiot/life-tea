@@ -18,7 +18,7 @@ class UserCRUD(CRUDBase):
         """根据手机号获取用户"""
         return db.query(self.model).filter(self.model.phone == phone).first()
 
-    def create_user(self, db: Session, user_data: dict):
+    def create_user(self, db: Session, user_data: dict) -> User:
         """创建用户"""
         # 检查 openid 是否已存在
         if self.get_by_openid(db, user_data["openid"]):
@@ -30,7 +30,7 @@ class UserCRUD(CRUDBase):
         db.refresh(user)
         return user
 
-    def update_user(self, db: Session, user_id: int, update_data: dict):
+    def update_user(self, db: Session, user_id: int, update_data: dict) -> User:
         """更新用户信息"""
         user = self.get(db, user_id)
         if not user:

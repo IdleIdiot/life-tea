@@ -13,9 +13,7 @@ class Settings(BaseSettings):
     DEBUG: bool = True
 
     # 数据库配置
-    DATABASE_URL: str = (
-        "mysql+mysqldb://admin:Amazing0534@sh-cynosdbmysql-grp-08otnh8a.sql.tencentcdb.com:26106/cloud1-7g2z6qs0ef1cb4ae"
-    )
+    DATABASE_URL: str = "mysql+mysqldb://xxxxxxxxx:xxxx/xxx"
 
     class Config:
         env_file = ".env"

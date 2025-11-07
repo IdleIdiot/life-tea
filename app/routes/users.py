@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_current_user
-from app.schemas import success_response, ResponseModel, ErrorResponse
+from app.schemas import success_response, ResponseModel, ErrorResponse, UserUpdate
 from app.crud import user_crud
+from datetime import date
 
 router = APIRouter()
 
@@ -17,37 +18,20 @@ async def get_user_profile(
 
 @router.put("/profile")
 async def update_user_profile(
-    profile_data: dict,
+    profile_data: UserUpdate,
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user),
 ):
     """更新用户资料"""
     try:
         updated_user = user_crud.update_user(
-            db, user_id=current_user["id"], user_in=profile_data
+            db,
+            user_id=current_user["id"],
+            user_data=profile_data,
         )
-
-        user_response = {
-            "id": updated_user.id,
-            "openid": updated_user.openid,
-            "nick_name": updated_user.nick_name,
-            "avatar_url": updated_user.avatar_url,
-            "phone": updated_user.phone,
-            "gender": updated_user.gender,
-            "member_level": updated_user.member_level,
-            "points": updated_user.points,
-            "status": updated_user.status,
-        }
-
-        return success_response(data=user_response, message="资料更新成功")
+        return success_response(data=updated_user.to_dict(), message="资料更新成功")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.get("/me")
-async def get_current_user(current_user: dict = Depends(get_current_user)):
-    """获取当前用户信息（简化版本）"""
-    return success_response(data=current_user)
 
 
 @router.post("/register")
@@ -72,27 +56,15 @@ async def wechat_register(req: Request, db: Session = Depends(get_db)):
                 "avatar_url": "cloud://cloud1-7g2z6qs0ef1cb4ae.636c-cloud1-7g2z6qs0ef1cb4ae-1384302075/mikltea/data/images/user_avatar.png",
                 "phone": "",
                 "gender": 0,
+                "birthday": date.today(),
                 "member_level": 1,
                 "points": 0,
                 "status": 1,
             }
             db_user = user_crud.create_user(db, user_data=user_data)
 
-        user_response = {
-            "id": db_user.id,
-            "openid": db_user.openid,
-            "unionid": db_user.unionid,
-            "nick_name": db_user.nick_name,
-            "avatar_url": db_user.avatar_url,
-            "phone": db_user.phone,
-            "gender": db_user.gender,
-            "member_level": db_user.member_level,
-            "points": db_user.points,
-            "status": db_user.status,
-        }
-
         return success_response(
-            data=user_response,
+            data=db_user.to_dict(),
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
