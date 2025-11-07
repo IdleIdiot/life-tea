@@ -20,10 +20,12 @@ async def get_current_user(
     return {
         "id": user.id,
         "openid": user.openid,
+        "unionid": user.unionid,
         "nick_name": user.nick_name,
         "avatar_url": user.avatar_url,
         "phone": getattr(user, "phone", ""),
         "gender": getattr(user, "gender", 0),
+        "birthday": getattr(user, "birthday", "2025-01-01"),
         "member_level": getattr(user, "member_level", 1),
         "points": getattr(user, "points", 0),
         "status": getattr(user, "status", 1),

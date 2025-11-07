@@ -29,17 +29,6 @@ class ResponseModel(BaseModel, Generic[T]):
         json_encoders = {datetime: lambda v: v.strftime("%Y-%m-%d %H:%M:%S")}
 
 
-class SuccessResponse(BaseModel):
-    """成功响应模型（无数据）"""
-
-    code: int = Field(default=ResponseCode.SUCCESS, description="状态码")
-    message: str = Field(default="操作成功", description="响应消息")
-    timestamp: datetime = Field(default_factory=datetime.now, description="时间戳")
-
-    class Config:
-        json_encoders = {datetime: lambda v: v.strftime("%Y-%m-%d %H:%M:%S")}
-
-
 class ErrorResponse(BaseModel):
     """错误响应模型"""
 
@@ -87,18 +76,3 @@ def bad_request_response(
 ) -> ErrorResponse:
     """400 响应"""
     return error_response(code=ResponseCode.BAD_REQUEST, message=message, detail=detail)
-
-
-# 导出常用的响应模型
-__all__ = [
-    "ResponseModel",
-    "ErrorResponse",
-    "SuccessResponse",
-    # 工具函数
-    "success_response",
-    "error_response",
-    "not_found_response",
-    "unauthorized_response",
-    "forbidden_response",
-    "bad_request_response",
-]

@@ -24,15 +24,6 @@ class User(BaseModel):
     points = Column(Integer, default=0)
     status = Column(Integer, default=1)  # 1:正常, 0:禁用
 
-    # 关系
-    # addresses = relationship(
-    #     "UserAddress", back_populates="user", cascade="all, delete-orphan"
-    # )
-    # orders = relationship("Order", back_populates="user")
-    # cart = relationship("Cart", back_populates="user", uselist=False)
-    # favorites = relationship("Favorite", back_populates="user")
-    # coupons = relationship("UserCoupon", back_populates="user")
-
 
 class UserAddress(BaseModel):
     __tablename__ = "user_addresses"
@@ -45,5 +36,3 @@ class UserAddress(BaseModel):
     latitude = Column(String(20), nullable=True)
     longitude = Column(String(20), nullable=True)
     is_default = Column(Boolean, default=False)
-
-    user = relationship("User", back_populates="addresses")
