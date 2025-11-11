@@ -1,14 +1,6 @@
-from sqlalchemy import (
-    Column,
-    Integer,
-    String,
-    Text,
-    Numeric,
-    Boolean,
-    JSON,
-    ForeignKey,
-)
+from sqlalchemy import JSON, Boolean, Column, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.orm import relationship
+
 from .base import BaseModel
 
 

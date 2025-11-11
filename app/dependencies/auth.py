@@ -1,5 +1,5 @@
-from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, Request
+from sqlalchemy.orm import Session
 
 from ..crud.user import user_crud
 from .database import get_db

@@ -1,9 +1,9 @@
+import logging
+
 from sqlalchemy.orm import Session
 
 from ..models import User
 from .base import CRUDBase
-
-import logging
 
 logger = logging.getLogger(__name__)
 

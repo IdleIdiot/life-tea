@@ -4,9 +4,8 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.routes import users, banners, categories, products
 from app.core.logger import setup_logger
-
+from app.routes import banners, categories, products, users
 
 setup_logger()
 logger = logging.getLogger(__name__)
@@ -46,7 +45,7 @@ async def headers_info(req: Request):
     return req.headers
 
 
-## TODO: 添加验证中间件 allowedSources x-wx-source
+# TODO: 添加验证中间件 allowedSources x-wx-source
 
 if __name__ == "__main__":
     import uvicorn

@@ -1,7 +1,6 @@
-from sqlalchemy import Column, Integer, DateTime, func
+from sqlalchemy import Column, DateTime, Integer, func
 from sqlalchemy.ext.declarative import declared_attr
-
-from sqlalchemy.orm import declarative_base, class_mapper
+from sqlalchemy.orm import class_mapper, declarative_base
 
 Base = declarative_base()
 

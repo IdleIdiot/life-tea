@@ -1,11 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
-from sqlalchemy.orm import Session
-from ..dependencies import get_db, get_current_user
-from ..schemas import success_response, ResponseModel, UserUpdate
-from ..crud import user_crud
+import logging
 from datetime import date
 
-import logging
+from fastapi import APIRouter, Depends, HTTPException, Request
+from sqlalchemy.orm import Session
+
+from ..crud import user_crud
+from ..dependencies import get_current_user, get_db
+from ..schemas import ResponseModel, UserUpdate, success_response
 
 logger = logging.getLogger(__name__)
 
@@ -75,11 +76,13 @@ async def wechat_register(req: Request, db: Session = Depends(get_db)):
         db_user = user_crud.get_by_openid(db, openid=openid)
         if not db_user:
             # 创建新用户
+            cloud_env = "cloud://cloud1-7g2z6qs0ef1cb4ae.636c-cloud1-7g2z6qs0ef1cb4ae-1384302075"
+
             user_data = {
                 "openid": openid,
                 "unionid": unionid,
                 "nick_name": f"用户{openid[-6:]}",
-                "avatar_url": "cloud://cloud1-7g2z6qs0ef1cb4ae.636c-cloud1-7g2z6qs0ef1cb4ae-1384302075/mikltea/data/images/user_avatar.png",
+                "avatar_url": f"{cloud_env}/mikltea/data/images/user_avatar.png",
                 "phone": "",
                 "gender": 0,
                 "birthday": date.today(),

@@ -1,12 +1,6 @@
-from sqlalchemy import (
-    Column,
-    String,
-    Integer,
-    Boolean,
-    Date,
-    ForeignKey,
-)
+from sqlalchemy import Boolean, Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
+
 from .base import BaseModel
 
 

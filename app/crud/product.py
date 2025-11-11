@@ -1,7 +1,7 @@
+import logging
+
 from ..models import Product
 from .base import CRUDBase
-
-import logging
 
 logger = logging.getLogger(__name__)
 
