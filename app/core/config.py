@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     DEBUG: bool = True
 
     # 数据库配置
-    DATABASE_URL: str = "mysql+mysqldb://xxxxxxxxx:xxxx/xxx"
+    DATABASE_URL: str = "mysql+mysqldb://localhost:3306/test"
 
     class Config:
         env_file = ".env"

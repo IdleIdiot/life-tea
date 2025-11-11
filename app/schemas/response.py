@@ -1,5 +1,5 @@
-from typing import Any, Generic, List, Optional, TypeVar
-from pydantic import BaseModel, Field
+from typing import Any, Generic, Optional, TypeVar
+from pydantic import BaseModel, Field, field_serializer, ConfigDict
 from datetime import datetime
 from enum import Enum
 
@@ -22,23 +22,15 @@ class ResponseModel(BaseModel, Generic[T]):
 
     code: int = Field(default=ResponseCode.SUCCESS, description="状态码")
     message: str = Field(default="success", description="响应消息")
-    data: Optional[T] = Field(default=None, description="响应数据")
+    data: Optional[T] = Field(default=None, description="响应数据（成功时）")
+    error_detail: Optional[Any] = Field(default=None, description="错误详情（失败时）")
     timestamp: datetime = Field(default_factory=datetime.now, description="时间戳")
 
-    class Config:
-        json_encoders = {datetime: lambda v: v.strftime("%Y-%m-%d %H:%M:%S")}
+    model_config = ConfigDict(from_attributes=True)
 
-
-class ErrorResponse(BaseModel):
-    """错误响应模型"""
-
-    code: int = Field(..., description="错误码")
-    message: str = Field(..., description="错误信息")
-    detail: Optional[Any] = Field(default=None, description="错误详情")
-    timestamp: datetime = Field(default_factory=datetime.now, description="时间戳")
-
-    class Config:
-        json_encoders = {datetime: lambda v: v.strftime("%Y-%m-%d %H:%M:%S")}
+    @field_serializer("timestamp")
+    def serialize_timestamp(self, dt: datetime) -> str:
+        return dt.strftime("%Y-%m-%d %H:%M:%S")
 
 
 # 响应工具函数
@@ -50,29 +42,33 @@ def success_response(data: Any = None, message: str = "success") -> ResponseMode
 def error_response(
     code: int = ResponseCode.INTERNAL_ERROR,
     message: str = "服务器内部错误",
-    detail: Any = None,
-) -> ErrorResponse:
+    error_detail: Any = None,
+) -> ResponseModel:
     """错误响应"""
-    return ErrorResponse(code=code, message=message, detail=detail)
+    return ResponseModel(code=code, message=message, error_detail=error_detail)
 
 
-def not_found_response(message: str = "资源不存在") -> ErrorResponse:
+def not_found_response(message: str = "资源不存在") -> ResponseModel:
     """404 响应"""
     return error_response(code=ResponseCode.NOT_FOUND, message=message)
 
 
-def unauthorized_response(message: str = "未授权访问") -> ErrorResponse:
+def unauthorized_response(message: str = "未授权访问") -> ResponseModel:
     """401 响应"""
     return error_response(code=ResponseCode.UNAUTHORIZED, message=message)
 
 
-def forbidden_response(message: str = "禁止访问") -> ErrorResponse:
+def forbidden_response(message: str = "禁止访问") -> ResponseModel:
     """403 响应"""
     return error_response(code=ResponseCode.FORBIDDEN, message=message)
 
 
 def bad_request_response(
-    message: str = "请求参数错误", detail: Any = None
-) -> ErrorResponse:
+    message: str = "请求参数错误", error_detail: Any = None
+) -> ResponseModel:
     """400 响应"""
-    return error_response(code=ResponseCode.BAD_REQUEST, message=message, detail=detail)
+    return error_response(
+        code=ResponseCode.BAD_REQUEST,
+        message=message,
+        error_detail=error_detail,
+    )

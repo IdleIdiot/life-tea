@@ -1,7 +1,11 @@
 from sqlalchemy.orm import Session
 
-from app.models.user import User
-from app.crud.base import CRUDBase
+from ..models import User
+from .base import CRUDBase
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class UserCRUD(CRUDBase):

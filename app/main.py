@@ -4,7 +4,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.routes import users
+from app.routes import users, banners, categories, products
 from app.core.logger import setup_logger
 
 
@@ -26,6 +26,9 @@ app.add_middleware(
 
 # 注册路由
 app.include_router(users.router, prefix="/api/users", tags=["用户"])
+app.include_router(banners.router, prefix="/api/banners", tags=["首页轮播"])
+app.include_router(categories.router, prefix="/api/categories", tags=["品类"])
+app.include_router(products.router, prefix="/api/products", tags=["产品"])
 
 
 @app.get("/")

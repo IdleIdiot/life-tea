@@ -7,7 +7,7 @@ from sqlalchemy import (
     ForeignKey,
 )
 from sqlalchemy.orm import relationship
-from app.models.base import BaseModel
+from .base import BaseModel
 
 
 class User(BaseModel):

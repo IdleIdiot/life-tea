@@ -1,9 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
-from app.dependencies import get_db, get_current_user
-from app.schemas import success_response, ResponseModel, ErrorResponse, UserUpdate
-from app.crud import user_crud
+from ..dependencies import get_db, get_current_user
+from ..schemas import success_response, ResponseModel, UserUpdate
+from ..crud import user_crud
 from datetime import date
+
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 router = APIRouter()
 
@@ -24,12 +29,33 @@ async def update_user_profile(
 ):
     """更新用户资料"""
     try:
+        logger.info(f"新用户数据为：{profile_data.model_dump()}")
+        logger.info(f"当前用户为：{current_user}")
+
         updated_user = user_crud.update_user(
             db,
             user_id=current_user["id"],
-            user_data=profile_data,
+            update_data=profile_data.model_dump(),
         )
+        logger.info("数据库更新成功")
         return success_response(data=updated_user.to_dict(), message="资料更新成功")
+    except Exception as e:
+        logger.error(e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/profile")
+async def delete_user_profile(
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user),
+):
+    try:
+        success = user_crud.delete(
+            db=db,
+            id=current_user["id"],
+        )
+        if success:
+            return success_response(message="用户删除成功")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

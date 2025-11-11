@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, Request
 
-from app.crud.user import user_crud
-from app.dependencies import get_db
+from ..crud.user import user_crud
+from .database import get_db
 
 
 async def get_current_user(
