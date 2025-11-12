@@ -9,7 +9,7 @@ class Category(BaseModel):
 
     name = Column(String(50), nullable=False, comment="分类名称")
     description = Column(String(255), nullable=True, comment="分类描述")
-    image_url = Column(String(255), nullable=True, comment="分类图片")
+    icon = Column(String(20), nullable=True, comment="分类图标")
     sort_order = Column(Integer, default=0, comment="排序权重（数字越大越靠前）")
     status = Column(Boolean, default=True, comment="状态 (True:显示, False:隐藏)")
 

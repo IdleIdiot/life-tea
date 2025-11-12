@@ -7,6 +7,7 @@ from .category import (
 )
 from .product import ProductCreate, ProductListResponse, ProductResponse, ProductUpdate
 from .response import (
+    ResponseCode,
     ResponseModel,
     bad_request_response,
     error_response,
@@ -15,4 +16,5 @@ from .response import (
     success_response,
     unauthorized_response,
 )
+from .shop import ShopCreate, ShopListResponse, ShopResponse, ShopUpdate
 from .user import UserCreate, UserListResponse, UserResponse, UserUpdate

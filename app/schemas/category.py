@@ -1,14 +1,16 @@
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel
 
 from .base import BaseSchema
+from .product import ProductResponse  # 导入ProductResponse
 
 
 class CategoryBase(BaseSchema):
+    id: Optional[int] = None
     name: str
     description: Optional[str] = None
-    image_url: Optional[str] = None
+    icon: Optional[str] = None
     sort_order: int = 0
     status: bool = True
 
@@ -18,15 +20,16 @@ class CategoryCreate(CategoryBase):
 
 
 class CategoryUpdate(BaseSchema):
-    name: Optional[str] = None
+    name: str
     description: Optional[str] = None
-    image_url: Optional[str] = None
-    sort_order: Optional[int] = None
-    status: Optional[bool] = None
+    icon: Optional[str] = None
+    sort_order: int = 0
+    status: bool = True
+    pass
 
 
 class CategoryResponse(CategoryBase):
-    pass
+    products: List[ProductResponse] = []  # 添加产品列表字段
 
 
 # 列表响应 Schema

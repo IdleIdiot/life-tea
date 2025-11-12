@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.core.logger import setup_logger
-from app.routes import banners, categories, products, users
+from app.routes import banners, categories, products, shops, users
 
 setup_logger()
 logger = logging.getLogger(__name__)
@@ -28,6 +28,7 @@ app.include_router(users.router, prefix="/api/users", tags=["用户"])
 app.include_router(banners.router, prefix="/api/banners", tags=["首页轮播"])
 app.include_router(categories.router, prefix="/api/categories", tags=["品类"])
 app.include_router(products.router, prefix="/api/products", tags=["产品"])
+app.include_router(shops.router, prefix="/api/shops", tags=["商铺"])
 
 
 @app.get("/")

@@ -19,6 +19,10 @@ class CRUDBase:
         """根据字段查询"""
         return db.query(self.model).filter(getattr(self.model, field) == value).first()
 
+    def get_all_by_field(self, db: Session, field: str, value: Any) -> Optional[Any]:
+        """根据字段查询"""
+        return db.query(self.model).filter(getattr(self.model, field) == value)
+
     # def get_multi(self, db: Session, skip: int = 0, limit: int = 100) -> List[Any]:
     #     """获取多条记录（分页）"""
     #     return db.query(self.model).offset(skip).limit(limit).all()

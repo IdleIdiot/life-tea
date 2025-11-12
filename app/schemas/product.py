@@ -8,6 +8,8 @@ from .base import BaseSchema
 
 
 class ProductBase(BaseSchema):
+    id: Optional[int] = None
+
     category_id: int
     name: str
     description: Optional[str] = None

@@ -6,6 +6,7 @@ from .base import BaseSchema
 
 
 class BannerBase(BaseSchema):
+    id: Optional[int] = None
     title: Optional[str] = None
     subtitle: Optional[str] = None
     image_url: Optional[str] = None
@@ -16,8 +17,10 @@ class BannerCreate(BannerBase):
     pass
 
 
-class BannerUpdate(BannerBase):
-    pass
+class BannerUpdate(BaseSchema):
+    title: Optional[str] = None
+    subtitle: Optional[str] = None
+    image_url: Optional[str] = None
 
 
 # 响应 Schema

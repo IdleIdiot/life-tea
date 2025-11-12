@@ -9,6 +9,8 @@ from .base import BaseSchema
 class UserBase(BaseSchema):
     """用户基础模型"""
 
+    id: Optional[int] = None
+
     # TODO: 其他协议通过以下方式，完善字段检查和限制详细使用
     openid: str = Field(..., min_length=1, max_length=64, description="微信openid")
     unionid: Optional[str] = Field(None, max_length=64, description="微信unionid")
@@ -31,7 +33,7 @@ class UserCreate(UserBase):
 class UserUpdate(BaseSchema):
     """更新用户请求模型"""
 
-    nick_name: Optional[str] = Field(None, max_length=100, description="昵称")
+    nick_name: Optional[str] = Field(None, max_length=8, description="昵称")
     avatar_url: Optional[str] = Field(None, max_length=255, description="头像URL")
     phone: Optional[str] = Field(None, max_length=20, description="手机号")
     gender: Optional[int] = Field(None, ge=0, le=2, description="性别")
